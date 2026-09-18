@@ -52,18 +52,22 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 
-# Copy Prisma schema + the prisma CLI so we can run `prisma db push` at startup
+# Copy Prisma schema
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
-COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-RUN mkdir -p /app/node_modules/.bin && \
-    ln -s /app/node_modules/prisma/build/index.js /app/node_modules/.bin/prisma
+
+# Install the Prisma CLI in the runner stage. We use npm here (bundled with
+# node:20-alpine) because the Prisma CLI has a deep transitive dependency tree
+# (e.g. @prisma/config → effect → c12, deepmerge-ts, empathic) that isn't fully
+# captured by `COPY --from=builder /app/node_modules/prisma`. Installing fresh
+# with npm resolves the whole tree cleanly. We pin the exact version to match
+# what's in bun.lock (avoids version mismatch with @prisma/client).
+RUN npm install --omit=dev --no-save prisma@6.19.2
 
 # Create the db directory (mount point for the persistent volume)
 RUN mkdir -p /app/db
 
 EXPOSE 3000
 
-# Initialize the database (idempotent) then start the Next.js server
-CMD ["sh", "-c", "npx --yes prisma db push --accept-data-loss --skip-generate && node server.js"]
+# Initialize the database (idempotent) then start the Next.js server.
+# We use the locally-installed prisma binary directly (no `npx` fetch).
+CMD ["sh", "-c", "./node_modules/.bin/prisma db push --accept-data-loss --skip-generate && node server.js"]

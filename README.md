@@ -358,6 +358,13 @@ Set `NOC_USERS=alice:alicePass,bob:bobPass,carol:carolPass` in `.env`. Each oper
 
 ## Troubleshooting
 
+### Container `noc-wall-app` fails to start with "Cannot find module 'effect'"
+This is a Prisma 6.x CLI dependency issue. The Prisma CLI depends on `@prisma/config`, which in turn depends on `effect`, `c12`, `deepmerge-ts`, and `empathic`. The current `Dockerfile` installs the Prisma CLI fresh in the runner stage via `npm install --omit=dev --no-save prisma@6.19.2` to pull all transitive dependencies.
+
+If you see this error after pulling an older version of the repo:
+1. Make sure you have the latest `Dockerfile` (it should contain `RUN npm install --omit=dev --no-save prisma@6.19.2` in the runner stage).
+2. Rebuild without cache: `docker compose build --no-cache app && docker compose up -d`.
+
 ### The wall view shows "Reconnecting" instead of "LIVE"
 - Check that the `ws` service is healthy: `docker compose ps` — all three services should show `(healthy)`.
 - Check the ws logs: `docker compose logs ws` — should show `WebSocket server running on port 3003` and `Client connected` lines.
@@ -374,6 +381,11 @@ Set `NOC_USERS=alice:alicePass,bob:bobPass,carol:carolPass` in `.env`. Each oper
 ### Prisma client errors after a schema change
 - The Docker image runs `prisma db push --accept-data-loss --skip-generate` at startup, so schema changes are applied automatically.
 - If you changed the schema, rebuild: `docker compose up --build -d`.
+
+### Container is stuck "unhealthy" and Caddy never starts
+- Check the app logs: `docker compose logs app`. The most common cause is the Prisma CLI failing to start because of a missing transitive dep (see the `effect` note above).
+- The app's healthcheck hits `GET /api/noc/updates?status=active` (a public endpoint). If that's not returning 200, the app hasn't started.
+- Force a clean rebuild: `docker compose down && docker compose build --no-cache && docker compose up -d`.
 
 ### Database persistence
 - The SQLite database lives in the `noc-db` Docker volume.

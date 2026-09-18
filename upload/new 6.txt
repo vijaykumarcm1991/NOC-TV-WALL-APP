@@ -1,0 +1,439 @@
+
+vijaykumarcm@OM-LTW-6335:/mnt/d/Personal Projects/NOC-TV-WALL-APP$ docker compose up -d --build
+[+] up 8/8
+ ✔ Image caddy:2-alpine Pulled                                                                                                       4.0s
+[+] Building 94.3s (40/40) FINISHED
+ => [internal] load local bake definitions                                                                                          0.0s
+ => => reading from stdin 1.03kB                                                                                                    0.0s
+ => [app internal] load build definition from Dockerfile                                                                            1.1s
+ => => transferring dockerfile: 2.42kB                                                                                              1.1s
+ => [ws internal] load build definition from Dockerfile                                                                             0.1s
+ => => transferring dockerfile: 833B                                                                                                0.0s
+ => [app] resolve image config for docker-image://docker.io/docker/dockerfile:1.6                                                   2.2s
+ => [app] docker-image://docker.io/docker/dockerfile:1.6@sha256:ac85f380a63b13dfcefa89046420e1781752bab202122f8f50032edf31be0021    0.9s
+ => => resolve docker.io/docker/dockerfile:1.6@sha256:ac85f380a63b13dfcefa89046420e1781752bab202122f8f50032edf31be0021              0.0s
+ => => sha256:9d9c93f4b00be908ab694a4df732570bced3b8a96b7515d70ff93402179ad232 11.80MB / 11.80MB                                    0.6s
+ => => extracting sha256:9d9c93f4b00be908ab694a4df732570bced3b8a96b7515d70ff93402179ad232                                           0.2s
+ => [ws internal] load metadata for docker.io/oven/bun:1-alpine                                                                     2.0s
+ => [app internal] load metadata for docker.io/library/node:20-alpine                                                               2.1s
+ => [ws internal] load .dockerignore                                                                                                0.1s
+ => => transferring context: 84B                                                                                                    0.0s
+ => [app internal] load .dockerignore                                                                                               0.1s
+ => => transferring context: 761B                                                                                                   0.1s
+ => [ws internal] load build context                                                                                                0.1s
+ => => transferring context: 7.37kB                                                                                                 0.0s
+ => [ws deps 1/4] FROM docker.io/oven/bun:1-alpine@sha256:d888c0ae6c86d7866ff10c5aafdd9077b36aee6455b33dd270fb93c0dd5cef6f          4.9s
+ => => resolve docker.io/oven/bun:1-alpine@sha256:d888c0ae6c86d7866ff10c5aafdd9077b36aee6455b33dd270fb93c0dd5cef6f                  0.0s
+ => => sha256:b216aceff86f6de8a6d89c1f2fe6f9836cce4753f4ddb9e3721034514a1ef9b2 145B / 145B                                          1.0s
+ => => sha256:fc5ac4e6215149f9f224f1113bc7fc90636ac2d988e5984c30bf789c3fa6b746 3.66MB / 3.66MB                                      1.0s
+ => => sha256:bfd10df2905c603069023451fbf585dc0a779104bc63784a69afa3cd16d856d4 185B / 185B                                          0.5s
+ => => sha256:adfaec35b0743e1bf814545feaa26fd2dcb7ef73797978ef9eba608268e1eb71 298B / 298B                                          0.2s
+ => => sha256:d28b3003702bebbef1fed310357a0fec59c367dc94f32f02b6aa9601fd6ebb98 34.84MB / 34.84MB                                    2.2s
+ => => sha256:f7ee36c9aa34bbb665f975c76e5c0d1607f0674b94c84cfb0061f87006ea5d10 3.79MB / 3.79MB                                      1.2s
+ => => extracting sha256:f7ee36c9aa34bbb665f975c76e5c0d1607f0674b94c84cfb0061f87006ea5d10                                           0.2s
+ => => extracting sha256:d28b3003702bebbef1fed310357a0fec59c367dc94f32f02b6aa9601fd6ebb98                                           0.6s
+ => => extracting sha256:adfaec35b0743e1bf814545feaa26fd2dcb7ef73797978ef9eba608268e1eb71                                           0.0s
+ => => extracting sha256:bfd10df2905c603069023451fbf585dc0a779104bc63784a69afa3cd16d856d4                                           0.0s
+ => => extracting sha256:fc5ac4e6215149f9f224f1113bc7fc90636ac2d988e5984c30bf789c3fa6b746                                           0.1s
+ => => extracting sha256:b216aceff86f6de8a6d89c1f2fe6f9836cce4753f4ddb9e3721034514a1ef9b2                                           0.0s
+ => [app runner  1/12] FROM docker.io/library/node:20-alpine@sha256:fb4cd12c85ee03686f6af5362a0b0d56d50c58a04632e6c0fb8363f6093722  6.3s
+ => => resolve docker.io/library/node:20-alpine@sha256:fb4cd12c85ee03686f6af5362a0b0d56d50c58a04632e6c0fb8363f609372293             0.0s
+ => => sha256:fff4e2c1b189bf87d63ad8bd07f7f4eb288d6f2b6a07a8bb44c60e8c075d2096 445B / 445B                                          0.7s
+ => => sha256:b2cbbfe903b0821005780971ddc5892edcc4ce74c5a48d82e1d2b382edac3122 1.26MB / 1.26MB                                      0.7s
+ => => sha256:4feea04c154301db6f4a496efa397b3db96603b1c009c797cfdde77bea8b3287 43.23MB / 43.23MB                                    4.0s
+ => => sha256:6a0ac1617861a677b045b7ff88545213ec31c0ff08763195a70a4a5adda577bb 3.86MB / 3.86MB                                      1.2s
+ => => extracting sha256:6a0ac1617861a677b045b7ff88545213ec31c0ff08763195a70a4a5adda577bb                                           0.2s
+ => => extracting sha256:4feea04c154301db6f4a496efa397b3db96603b1c009c797cfdde77bea8b3287                                           1.9s
+ => => extracting sha256:b2cbbfe903b0821005780971ddc5892edcc4ce74c5a48d82e1d2b382edac3122                                           0.1s
+ => => extracting sha256:fff4e2c1b189bf87d63ad8bd07f7f4eb288d6f2b6a07a8bb44c60e8c075d2096                                           0.1s
+ => [app internal] load build context                                                                                               1.6s
+ => => transferring context: 636.95kB                                                                                               1.5s
+ => [ws deps 2/4] WORKDIR /app                                                                                                      0.1s
+ => [ws deps 3/4] COPY package.json bun.lock ./                                                                                     0.1s
+ => [app deps 3/6] COPY package.json bun.lock ./                                                                                    0.1s
+ => [ws deps 4/4] RUN bun install --frozen-lockfile --production                                                                    2.8s
+ => [app deps 4/6] COPY prisma ./prisma                                                                                             0.1s
+ => [app deps 5/6] RUN bun install --frozen-lockfile                                                                               11.3s
+ => [app runner  2/12] WORKDIR /app                                                                                                 0.5s
+ => [app runner  3/12] RUN apk add --no-cache openssl libc6-compat wget                                                            10.5s
+ => [ws runner 3/4] COPY --from=deps /app/node_modules ./node_modules                                                               1.1s
+ => [ws runner 4/4] COPY index.ts ./                                                                                                0.4s
+ => [ws] exporting to image                                                                                                         3.1s
+ => => exporting layers                                                                                                             1.8s
+ => => exporting manifest sha256:72bef45bf058cdd4a77654442ca1a1740ea63eeef3f2189dc5881bb57aab5e82                                   0.2s
+ => => exporting config sha256:dc655b3f2dcd6bc5cf502de297ccd3b81aae24a463d30add96b7399c40b9753d                                     0.1s
+ => => exporting attestation manifest sha256:0541b6ae26ad6892cfd831f7e22518c63fe58df6eaf8762b01c5cae9f16a748c                       0.1s
+ => => exporting manifest list sha256:2712684349092514c63833571be629b3d1487809efd0433c8d5cb9dd984467a9                              0.0s
+ => => naming to docker.io/library/noc-tv-wall-app-ws:latest                                                                        0.0s
+ => => unpacking to docker.io/library/noc-tv-wall-app-ws:latest                                                                     0.7s
+ => [ws] resolving provenance for metadata file                                                                                     0.0s
+ => [app deps 6/6] RUN bunx prisma generate                                                                                         4.3s
+ => [app builder 3/5] COPY --from=deps /app/node_modules ./node_modules                                                            14.1s
+ => [app builder 4/5] COPY . .                                                                                                      0.5s
+ => [app builder 5/5] RUN bun run build                                                                                            20.0s
+ => [app runner  4/12] COPY --from=builder /app/.next/standalone ./                                                                 0.8s
+ => [app runner  5/12] COPY --from=builder /app/.next/static ./.next/static                                                         0.2s
+ => [app runner  6/12] COPY --from=builder /app/public ./public                                                                     0.2s
+ => [app runner  7/12] COPY --from=builder /app/prisma ./prisma                                                                     0.2s
+ => [app runner  8/12] COPY --from=builder /app/node_modules/prisma ./node_modules/prisma                                           0.3s
+ => [app runner  9/12] COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma                                         0.4s
+ => [app runner 10/12] COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma                                         0.2s
+ => [app runner 11/12] RUN mkdir -p /app/node_modules/.bin &&     ln -s /app/node_modules/prisma/build/index.js /app/node_modules/  0.5s
+ => [app runner 12/12] RUN mkdir -p /app/db                                                                                         0.5s
+ => [app] exporting to image                                                                                                       18.1s
+ => => exporting layers                                                                                                            13.0s
+ => => exporting manifest sha256:5cb96249a19df96b49d718aed8a99125439662f0ea3e015e47d58504364b62b5                                   0.0s
+ => => exporting config sha256:7c11368329e4c3c6894ed34c197687ae4e485bd051597939562067d034f688ac                                     0.1s
+ => => exporting attestation manifest sha256:ba11a7cf00229169c9c77e774de530000fa6c6a9869d182872b27f1fab6826e3                       0.1s
+ => => exporting manifest list sha256:47b8b54ed38be712e1ca638b6673f67e7f09178d91f89d680210f5b6060493cd                              0.0s
+ => => naming to docker.io/library/noc-tv-wall-app-app:latest                                                                       0.0s
+[+] up 15/15king to docker.io/library/noc-tv-wall-app-app:latest                                                                    4.8s
+ ✔ Image caddy:2-alpine            Pulled                                                                                            4.0s
+ ✔ Image noc-tv-wall-app-app       Built                                                                                            94.6s
+ ✔ Image noc-tv-wall-app-ws        Built                                                                                            94.5s
+ ✔ Network noc-tv-wall-app_default Created                                                                                           0.1s
+ ✔ Volume noc-tv-wall-app_noc-db   Created                                                                                           0.0s
+ ✔ Container noc-wall-ws           Healthy                                                                                           7.7s
+ ✘ Container noc-wall-app          Error dependency app failed to start                                                              8.6s
+ ✔ Container noc-wall-caddy        Created                                                                                           0.2s
+dependency failed to start: container noc-wall-app is unhealthy
+vijaykumarcm@OM-LTW-6335:/mnt/d/Personal Projects/NOC-TV-WALL-APP$ docker compose up -d --build
+[+] Building 7.2s (40/40) FINISHED
+ => [internal] load local bake definitions                                                                                          0.0s
+ => => reading from stdin 1.03kB                                                                                                    0.0s
+ => [app internal] load build definition from Dockerfile                                                                            1.1s
+ => => transferring dockerfile: 2.42kB                                                                                              1.1s
+ => [ws internal] load build definition from Dockerfile                                                                             0.0s
+ => => transferring dockerfile: 833B                                                                                                0.0s
+ => [app] resolve image config for docker-image://docker.io/docker/dockerfile:1.6                                                   1.1s
+ => CACHED [app] docker-image://docker.io/docker/dockerfile:1.6@sha256:ac85f380a63b13dfcefa89046420e1781752bab202122f8f50032edf31b  0.1s
+ => => resolve docker.io/docker/dockerfile:1.6@sha256:ac85f380a63b13dfcefa89046420e1781752bab202122f8f50032edf31be0021              0.1s
+ => [ws internal] load metadata for docker.io/oven/bun:1-alpine                                                                     0.8s
+ => [app internal] load metadata for docker.io/library/node:20-alpine                                                               0.8s
+ => [ws internal] load .dockerignore                                                                                                0.0s
+ => => transferring context: 84B                                                                                                    0.0s
+ => [ws internal] load build context                                                                                                0.1s
+ => => transferring context: 90B                                                                                                    0.0s
+ => [app deps 1/6] FROM docker.io/oven/bun:1-alpine@sha256:d888c0ae6c86d7866ff10c5aafdd9077b36aee6455b33dd270fb93c0dd5cef6f         0.2s
+ => => resolve docker.io/oven/bun:1-alpine@sha256:d888c0ae6c86d7866ff10c5aafdd9077b36aee6455b33dd270fb93c0dd5cef6f                  0.1s
+ => CACHED [app deps 2/6] WORKDIR /app                                                                                              0.0s
+ => CACHED [ws deps 3/4] COPY package.json bun.lock ./                                                                              0.0s
+ => CACHED [ws deps 4/4] RUN bun install --frozen-lockfile --production                                                             0.0s
+ => CACHED [ws runner 3/4] COPY --from=deps /app/node_modules ./node_modules                                                        0.0s
+ => CACHED [ws runner 4/4] COPY index.ts ./                                                                                         0.0s
+ => [ws] exporting to image                                                                                                         0.2s
+ => => exporting layers                                                                                                             0.0s
+ => => exporting manifest sha256:72bef45bf058cdd4a77654442ca1a1740ea63eeef3f2189dc5881bb57aab5e82                                   0.0s
+ => => exporting config sha256:dc655b3f2dcd6bc5cf502de297ccd3b81aae24a463d30add96b7399c40b9753d                                     0.0s
+ => => exporting attestation manifest sha256:2ac6d04eb09f2d4b1a60254b245a6975306e8f7066dff9cba109c3796f839729                       0.0s
+ => => exporting manifest list sha256:7cd7485e239f33e226b722781fbb9310ec5a4a6dd7c54bc9e3a770909641abbf                              0.0s
+ => => naming to docker.io/library/noc-tv-wall-app-ws:latest                                                                        0.0s
+ => => unpacking to docker.io/library/noc-tv-wall-app-ws:latest                                                                     0.0s
+ => [app internal] load .dockerignore                                                                                               0.1s
+ => => transferring context: 761B                                                                                                   0.1s
+ => [ws] resolving provenance for metadata file                                                                                     0.0s
+ => [app runner  1/12] FROM docker.io/library/node:20-alpine@sha256:fb4cd12c85ee03686f6af5362a0b0d56d50c58a04632e6c0fb8363f6093722  0.1s
+ => => resolve docker.io/library/node:20-alpine@sha256:fb4cd12c85ee03686f6af5362a0b0d56d50c58a04632e6c0fb8363f609372293             0.1s
+ => [app internal] load build context                                                                                               0.6s
+ => => transferring context: 4.82kB                                                                                                 0.6s
+ => CACHED [app runner  2/12] WORKDIR /app                                                                                          0.0s
+ => CACHED [app runner  3/12] RUN apk add --no-cache openssl libc6-compat wget                                                      0.0s
+ => CACHED [app deps 3/6] COPY package.json bun.lock ./                                                                             0.0s
+ => CACHED [app deps 4/6] COPY prisma ./prisma                                                                                      0.0s
+ => CACHED [app deps 5/6] RUN bun install --frozen-lockfile                                                                         0.0s
+ => CACHED [app deps 6/6] RUN bunx prisma generate                                                                                  0.0s
+ => CACHED [app builder 3/5] COPY --from=deps /app/node_modules ./node_modules                                                      0.0s
+ => CACHED [app builder 4/5] COPY . .                                                                                               0.0s
+ => CACHED [app builder 5/5] RUN bun run build                                                                                      0.0s
+ => CACHED [app runner  4/12] COPY --from=builder /app/.next/standalone ./                                                          0.0s
+ => CACHED [app runner  5/12] COPY --from=builder /app/.next/static ./.next/static                                                  0.0s
+ => CACHED [app runner  6/12] COPY --from=builder /app/public ./public                                                              0.0s
+ => CACHED [app runner  7/12] COPY --from=builder /app/prisma ./prisma                                                              0.0s
+ => CACHED [app runner  8/12] COPY --from=builder /app/node_modules/prisma ./node_modules/prisma                                    0.0s
+ => CACHED [app runner  9/12] COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma                                  0.0s
+ => CACHED [app runner 10/12] COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma                                  0.0s
+ => CACHED [app runner 11/12] RUN mkdir -p /app/node_modules/.bin &&     ln -s /app/node_modules/prisma/build/index.js /app/node_m  0.0s
+ => CACHED [app runner 12/12] RUN mkdir -p /app/db                                                                                  0.0s
+ => [app] exporting to image                                                                                                        0.2s
+ => => exporting layers                                                                                                             0.0s
+ => => exporting manifest sha256:5cb96249a19df96b49d718aed8a99125439662f0ea3e015e47d58504364b62b5                                   0.0s
+ => => exporting config sha256:7c11368329e4c3c6894ed34c197687ae4e485bd051597939562067d034f688ac                                     0.0s
+ => => exporting attestation manifest sha256:5e354ef60df351a9e5ae2a87d50fcbedb4154c6e2cb598363e5ff1735b98609b                       0.0s
+ => => exporting manifest list sha256:ca201693c634e5e9b33c5330d625628b60af727cf201d9019554d031a05af6bb                              0.0s
+ => => naming to docker.io/library/noc-tv-wall-app-app:latest                                                                       0.0s
+ => => unpacking to docker.io/library/noc-tv-wall-app-app:latest                                                                    0.0s
+ => [app] resolving provenance for metadata file                                                                                    0.0s
+[+] up 4/4
+ ✔ Image noc-tv-wall-app-app Built                                                                                                   7.4s
+ ✔ Image noc-tv-wall-app-ws  Built                                                                                                   7.4s
+ ✔ Container noc-wall-ws     Healthy                                                                                                 1.1s
+ ✘ Container noc-wall-app    Error dependency app failed to start                                                                    0.5s
+dependency failed to start: container noc-wall-app is unhealthy
+vijaykumarcm@OM-LTW-6335:/mnt/d/Personal Projects/NOC-TV-WALL-APP$ docker compose logs -f
+noc-wall-ws  | [NOC-Wall] WebSocket server running on port 3003
+noc-wall-app  | node:internal/modules/cjs/loader:1210
+noc-wall-app  |   throw err;
+noc-wall-app  |   ^
+noc-wall-app  |
+noc-wall-app  | Error: Cannot find module 'effect'
+noc-wall-app  | Require stack:
+noc-wall-app  | - /app/node_modules/@prisma/config/dist/index.js
+noc-wall-app  | - /app/node_modules/prisma/build/index.js
+noc-wall-app  |     at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+noc-wall-app  |     at Module._load (node:internal/modules/cjs/loader:1038:27)
+noc-wall-app  |     at Module.require (node:internal/modules/cjs/loader:1289:19)
+noc-wall-app  |     at require (node:internal/modules/helpers:182:18)
+noc-wall-app  |     at Object.<anonymous> (/app/node_modules/@prisma/config/dist/index.js:361:22)
+noc-wall-app  |     at Module._compile (node:internal/modules/cjs/loader:1521:14)
+noc-wall-app  |     at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+noc-wall-app  |     at Module.load (node:internal/modules/cjs/loader:1266:32)
+noc-wall-app  |     at Module._load (node:internal/modules/cjs/loader:1091:12)
+noc-wall-app  |     at Module.require (node:internal/modules/cjs/loader:1289:19) {
+noc-wall-app  |   code: 'MODULE_NOT_FOUND',
+noc-wall-app  |   requireStack: [
+noc-wall-app  |     '/app/node_modules/@prisma/config/dist/index.js',
+noc-wall-app  |     '/app/node_modules/prisma/build/index.js'
+noc-wall-app  |   ]
+noc-wall-app  | }
+noc-wall-app  |
+noc-wall-app  | Node.js v20.20.2
+noc-wall-app  | npm notice
+noc-wall-app  | npm notice New major version of npm available! 10.8.2 -> 12.0.2
+noc-wall-app  | npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.0.2
+noc-wall-app  | npm notice To update run: npm install -g npm@12.0.2
+noc-wall-app  | npm notice
+noc-wall-app  | node:internal/modules/cjs/loader:1210
+noc-wall-app  |   throw err;
+noc-wall-app  |   ^
+noc-wall-app  |
+noc-wall-app  | Error: Cannot find module 'effect'
+noc-wall-app  | Require stack:
+noc-wall-app  | - /app/node_modules/@prisma/config/dist/index.js
+noc-wall-app  | - /app/node_modules/prisma/build/index.js
+noc-wall-app  |     at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+noc-wall-app  |     at Module._load (node:internal/modules/cjs/loader:1038:27)
+noc-wall-app  |     at Module.require (node:internal/modules/cjs/loader:1289:19)
+noc-wall-app  |     at require (node:internal/modules/helpers:182:18)
+noc-wall-app  |     at Object.<anonymous> (/app/node_modules/@prisma/config/dist/index.js:361:22)
+noc-wall-app  |     at Module._compile (node:internal/modules/cjs/loader:1521:14)
+noc-wall-app  |     at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+noc-wall-app  |     at Module.load (node:internal/modules/cjs/loader:1266:32)
+noc-wall-app  |     at Module._load (node:internal/modules/cjs/loader:1091:12)
+noc-wall-app  |     at Module.require (node:internal/modules/cjs/loader:1289:19) {
+noc-wall-app  |   code: 'MODULE_NOT_FOUND',
+noc-wall-app  |   requireStack: [
+noc-wall-app  |     '/app/node_modules/@prisma/config/dist/index.js',
+noc-wall-app  |     '/app/node_modules/prisma/build/index.js'
+noc-wall-app  |   ]
+noc-wall-app  | }
+noc-wall-app  |
+noc-wall-app  | Node.js v20.20.2
+noc-wall-app  | node:internal/modules/cjs/loader:1210
+noc-wall-app  |   throw err;
+noc-wall-app  |   ^
+noc-wall-app  |
+noc-wall-app  | Error: Cannot find module 'effect'
+noc-wall-app  | Require stack:
+noc-wall-app  | - /app/node_modules/@prisma/config/dist/index.js
+noc-wall-app  | - /app/node_modules/prisma/build/index.js
+noc-wall-app  |     at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+noc-wall-app  |     at Module._load (node:internal/modules/cjs/loader:1038:27)
+noc-wall-app  |     at Module.require (node:internal/modules/cjs/loader:1289:19)
+noc-wall-app  |     at require (node:internal/modules/helpers:182:18)
+noc-wall-app  |     at Object.<anonymous> (/app/node_modules/@prisma/config/dist/index.js:361:22)
+noc-wall-app  |     at Module._compile (node:internal/modules/cjs/loader:1521:14)
+noc-wall-app  |     at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+noc-wall-app  |     at Module.load (node:internal/modules/cjs/loader:1266:32)
+noc-wall-app  |     at Module._load (node:internal/modules/cjs/loader:1091:12)
+noc-wall-app  |     at Module.require (node:internal/modules/cjs/loader:1289:19) {
+noc-wall-app  |   code: 'MODULE_NOT_FOUND',
+noc-wall-app  |   requireStack: [
+noc-wall-app  |     '/app/node_modules/@prisma/config/dist/index.js',
+noc-wall-app  |     '/app/node_modules/prisma/build/index.js'
+noc-wall-app  |   ]
+noc-wall-app  | }
+noc-wall-app  |
+noc-wall-app  | Node.js v20.20.2
+noc-wall-app  | node:internal/modules/cjs/loader:1210
+noc-wall-app  |   throw err;
+noc-wall-app  |   ^
+noc-wall-app  |
+noc-wall-app  | Error: Cannot find module 'effect'
+noc-wall-app  | Require stack:
+noc-wall-app  | - /app/node_modules/@prisma/config/dist/index.js
+noc-wall-app  | - /app/node_modules/prisma/build/index.js
+noc-wall-app  |     at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+noc-wall-app  |     at Module._load (node:internal/modules/cjs/loader:1038:27)
+noc-wall-app  |     at Module.require (node:internal/modules/cjs/loader:1289:19)
+noc-wall-app  |     at require (node:internal/modules/helpers:182:18)
+noc-wall-app  |     at Object.<anonymous> (/app/node_modules/@prisma/config/dist/index.js:361:22)
+noc-wall-app  |     at Module._compile (node:internal/modules/cjs/loader:1521:14)
+noc-wall-app  |     at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+noc-wall-app  |     at Module.load (node:internal/modules/cjs/loader:1266:32)
+noc-wall-app  |     at Module._load (node:internal/modules/cjs/loader:1091:12)
+noc-wall-app  |     at Module.require (node:internal/modules/cjs/loader:1289:19) {
+noc-wall-app  |   code: 'MODULE_NOT_FOUND',
+noc-wall-app  |   requireStack: [
+noc-wall-app  |     '/app/node_modules/@prisma/config/dist/index.js',
+noc-wall-app  |     '/app/node_modules/prisma/build/index.js'
+noc-wall-app  |   ]
+noc-wall-app  | }
+noc-wall-app  |
+noc-wall-app  | Node.js v20.20.2
+noc-wall-app  | node:internal/modules/cjs/loader:1210
+noc-wall-app  |   throw err;
+noc-wall-app  |   ^
+noc-wall-app  |
+noc-wall-app  | Error: Cannot find module 'effect'
+noc-wall-app  | Require stack:
+noc-wall-app  | - /app/node_modules/@prisma/config/dist/index.js
+noc-wall-app  | - /app/node_modules/prisma/build/index.js
+noc-wall-app  |     at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+noc-wall-app  |     at Module._load (node:internal/modules/cjs/loader:1038:27)
+noc-wall-app  |     at Module.require (node:internal/modules/cjs/loader:1289:19)
+noc-wall-app  |     at require (node:internal/modules/helpers:182:18)
+noc-wall-app  |     at Object.<anonymous> (/app/node_modules/@prisma/config/dist/index.js:361:22)
+noc-wall-app  |     at Module._compile (node:internal/modules/cjs/loader:1521:14)
+noc-wall-app  |     at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+noc-wall-app  |     at Module.load (node:internal/modules/cjs/loader:1266:32)
+noc-wall-app  |     at Module._load (node:internal/modules/cjs/loader:1091:12)
+noc-wall-app  |     at Module.require (node:internal/modules/cjs/loader:1289:19) {
+noc-wall-app  |   code: 'MODULE_NOT_FOUND',
+noc-wall-app  |   requireStack: [
+noc-wall-app  |     '/app/node_modules/@prisma/config/dist/index.js',
+noc-wall-app  |     '/app/node_modules/prisma/build/index.js'
+noc-wall-app  |   ]
+noc-wall-app  | }
+noc-wall-app  |
+noc-wall-app  | Node.js v20.20.2
+noc-wall-app  | node:internal/modules/cjs/loader:1210
+noc-wall-app  |   throw err;
+noc-wall-app  |   ^
+noc-wall-app  |
+noc-wall-app  | Error: Cannot find module 'effect'
+noc-wall-app  | Require stack:
+noc-wall-app  | - /app/node_modules/@prisma/config/dist/index.js
+noc-wall-app  | - /app/node_modules/prisma/build/index.js
+noc-wall-app  |     at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+noc-wall-app  |     at Module._load (node:internal/modules/cjs/loader:1038:27)
+noc-wall-app  |     at Module.require (node:internal/modules/cjs/loader:1289:19)
+noc-wall-app  |     at require (node:internal/modules/helpers:182:18)
+noc-wall-app  |     at Object.<anonymous> (/app/node_modules/@prisma/config/dist/index.js:361:22)
+noc-wall-app  |     at Module._compile (node:internal/modules/cjs/loader:1521:14)
+noc-wall-app  |     at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+noc-wall-app  |     at Module.load (node:internal/modules/cjs/loader:1266:32)
+noc-wall-app  |     at Module._load (node:internal/modules/cjs/loader:1091:12)
+noc-wall-app  |     at Module.require (node:internal/modules/cjs/loader:1289:19) {
+noc-wall-app  |   code: 'MODULE_NOT_FOUND',
+noc-wall-app  |   requireStack: [
+noc-wall-app  |     '/app/node_modules/@prisma/config/dist/index.js',
+noc-wall-app  |     '/app/node_modules/prisma/build/index.js'
+noc-wall-app  |   ]
+noc-wall-app  | }
+noc-wall-app  |
+noc-wall-app  | Node.js v20.20.2
+noc-wall-app  | node:internal/modules/cjs/loader:1210
+noc-wall-app  |   throw err;
+noc-wall-app  |   ^
+noc-wall-app  |
+noc-wall-app  | Error: Cannot find module 'effect'
+noc-wall-app  | Require stack:
+noc-wall-app  | - /app/node_modules/@prisma/config/dist/index.js
+noc-wall-app  | - /app/node_modules/prisma/build/index.js
+noc-wall-app  |     at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+noc-wall-app  |     at Module._load (node:internal/modules/cjs/loader:1038:27)
+noc-wall-app  |     at Module.require (node:internal/modules/cjs/loader:1289:19)
+noc-wall-app  |     at require (node:internal/modules/helpers:182:18)
+noc-wall-app  |     at Object.<anonymous> (/app/node_modules/@prisma/config/dist/index.js:361:22)
+noc-wall-app  |     at Module._compile (node:internal/modules/cjs/loader:1521:14)
+noc-wall-app  |     at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+noc-wall-app  |     at Module.load (node:internal/modules/cjs/loader:1266:32)
+noc-wall-app  |     at Module._load (node:internal/modules/cjs/loader:1091:12)
+noc-wall-app  |     at Module.require (node:internal/modules/cjs/loader:1289:19) {
+noc-wall-app  |   code: 'MODULE_NOT_FOUND',
+noc-wall-app  |   requireStack: [
+noc-wall-app  |     '/app/node_modules/@prisma/config/dist/index.js',
+noc-wall-app  |     '/app/node_modules/prisma/build/index.js'
+noc-wall-app  |   ]
+noc-wall-app  | }
+noc-wall-app  |
+noc-wall-app  | Node.js v20.20.2
+noc-wall-app  | node:internal/modules/cjs/loader:1210
+noc-wall-app  |   throw err;
+noc-wall-app  |   ^
+noc-wall-app  |
+noc-wall-app  | Error: Cannot find module 'effect'
+noc-wall-app  | Require stack:
+noc-wall-app  | - /app/node_modules/@prisma/config/dist/index.js
+noc-wall-app  | - /app/node_modules/prisma/build/index.js
+noc-wall-app  |     at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+noc-wall-app  |     at Module._load (node:internal/modules/cjs/loader:1038:27)
+noc-wall-app  |     at Module.require (node:internal/modules/cjs/loader:1289:19)
+noc-wall-app  |     at require (node:internal/modules/helpers:182:18)
+noc-wall-app  |     at Object.<anonymous> (/app/node_modules/@prisma/config/dist/index.js:361:22)
+noc-wall-app  |     at Module._compile (node:internal/modules/cjs/loader:1521:14)
+noc-wall-app  |     at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+noc-wall-app  |     at Module.load (node:internal/modules/cjs/loader:1266:32)
+noc-wall-app  |     at Module._load (node:internal/modules/cjs/loader:1091:12)
+noc-wall-app  |     at Module.require (node:internal/modules/cjs/loader:1289:19) {
+noc-wall-app  |   code: 'MODULE_NOT_FOUND',
+noc-wall-app  |   requireStack: [
+noc-wall-app  |     '/app/node_modules/@prisma/config/dist/index.js',
+noc-wall-app  |     '/app/node_modules/prisma/build/index.js'
+noc-wall-app  |   ]
+noc-wall-app  | }
+noc-wall-app  |
+noc-wall-app  | Node.js v20.20.2
+noc-wall-app  | node:internal/modules/cjs/loader:1210
+noc-wall-app  |   throw err;
+noc-wall-app  |   ^
+noc-wall-app  |
+noc-wall-app  | Error: Cannot find module 'effect'
+noc-wall-app  | Require stack:
+noc-wall-app  | - /app/node_modules/@prisma/config/dist/index.js
+noc-wall-app  | - /app/node_modules/prisma/build/index.js
+noc-wall-app  |     at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+noc-wall-app  |     at Module._load (node:internal/modules/cjs/loader:1038:27)
+noc-wall-app  |     at Module.require (node:internal/modules/cjs/loader:1289:19)
+noc-wall-app  |     at require (node:internal/modules/helpers:182:18)
+noc-wall-app  |     at Object.<anonymous> (/app/node_modules/@prisma/config/dist/index.js:361:22)
+noc-wall-app  |     at Module._compile (node:internal/modules/cjs/loader:1521:14)
+noc-wall-app  |     at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+noc-wall-app  |     at Module.load (node:internal/modules/cjs/loader:1266:32)
+noc-wall-app  |     at Module._load (node:internal/modules/cjs/loader:1091:12)
+noc-wall-app  |     at Module.require (node:internal/modules/cjs/loader:1289:19) {
+noc-wall-app  |   code: 'MODULE_NOT_FOUND',
+noc-wall-app  |   requireStack: [
+noc-wall-app  |     '/app/node_modules/@prisma/config/dist/index.js',
+noc-wall-app  |     '/app/node_modules/prisma/build/index.js'
+noc-wall-app  |   ]
+noc-wall-app  | }
+noc-wall-app  |
+noc-wall-app  | Node.js v20.20.2
+noc-wall-app  | node:internal/modules/cjs/loader:1210
+noc-wall-app  |   throw err;
+noc-wall-app  |   ^
+noc-wall-app  |
+noc-wall-app  | Error: Cannot find module 'effect'
+noc-wall-app  | Require stack:
+noc-wall-app  | - /app/node_modules/@prisma/config/dist/index.js
+noc-wall-app  | - /app/node_modules/prisma/build/index.js
+noc-wall-app  |     at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+noc-wall-app  |     at Module._load (node:internal/modules/cjs/loader:1038:27)
+noc-wall-app  |     at Module.require (node:internal/modules/cjs/loader:1289:19)
+noc-wall-app  |     at require (node:internal/modules/helpers:182:18)
+noc-wall-app  |     at Object.<anonymous> (/app/node_modules/@prisma/config/dist/index.js:361:22)
+noc-wall-app  |     at Module._compile (node:internal/modules/cjs/loader:1521:14)
+noc-wall-app  |     at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+noc-wall-app  |     at Module.load (node:internal/modules/cjs/loader:1266:32)
+noc-wall-app  |     at Module._load (node:internal/modules/cjs/loader:1091:12)
+noc-wall-app  |     at Module.require (node:internal/modules/cjs/loader:1289:19) {
+noc-wall-app  |   code: 'MODULE_NOT_FOUND',
+noc-wall-app  |   requireStack: [
+noc-wall-app  |     '/app/node_modules/@prisma/config/dist/index.js',
+noc-wall-app  |     '/app/node_modules/prisma/build/index.js'
+noc-wall-app  |   ]
+noc-wall-app  | }
+noc-wall-app  |
+noc-wall-app  | Node.js v20.20.2
+noc-wall-app exited with code 1 (restarting)
