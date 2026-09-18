@@ -1,10 +1,12 @@
-:81 {
+:80 {
+	# Route requests that include the XTransformPort query param to the
+	# corresponding internal service (currently only port 3003 → ws service).
 	@transform_port_query {
 		query XTransformPort=*
 	}
 
 	handle @transform_port_query {
-		reverse_proxy localhost:{query.XTransformPort} {
+		reverse_proxy ws:3003 {
 			header_up Host {host}
 			header_up X-Forwarded-For {remote_host}
 			header_up X-Forwarded-Proto {scheme}
@@ -12,8 +14,9 @@
 		}
 	}
 
+	# Everything else → Next.js app (port 3000)
 	handle {
-		reverse_proxy localhost:3000 {
+		reverse_proxy app:3000 {
 			header_up Host {host}
 			header_up X-Forwarded-For {remote_host}
 			header_up X-Forwarded-Proto {scheme}

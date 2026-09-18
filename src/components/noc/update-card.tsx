@@ -14,6 +14,8 @@ import {
   Wrench,
   CircleDot,
   Loader2,
+  Pin,
+  PinOff,
 } from 'lucide-react'
 import { PRIORITY_META, CATEGORY_META } from '@/lib/noc-types'
 import type { NocUpdate, Category } from '@/lib/noc-types'
@@ -25,6 +27,8 @@ interface UpdateCardProps {
   onResolve?: (id: string) => Promise<void>
   onReactivate?: (id: string) => Promise<void>
   onDelete?: (id: string) => Promise<void>
+  onPin?: (id: string) => Promise<void>
+  onUnpin?: (id: string) => Promise<void>
 }
 
 const CATEGORY_ICONS: Record<Category, typeof AlertTriangle> = {
@@ -65,10 +69,13 @@ export function UpdateCard({
   onResolve,
   onReactivate,
   onDelete,
+  onPin,
+  onUnpin,
 }: UpdateCardProps) {
   const [busy, setBusy] = useState(false)
   const meta = PRIORITY_META[update.priority]
   const CatIcon = CATEGORY_ICONS[update.category]
+  const canPin = update.priority === 'critical' && update.status === 'active'
 
   const handleAction = async (fn: (id: string) => Promise<void>) => {
     setBusy(true)
@@ -81,7 +88,9 @@ export function UpdateCard({
 
   return (
     <Card
-      className={`relative overflow-hidden border-l-4 ${meta.border} ${meta.bg} bg-slate-900/80 backdrop-blur-sm`}
+      className={`relative overflow-hidden border-l-4 ${meta.border} ${meta.bg} bg-slate-900/80 backdrop-blur-sm ${
+        update.pinned ? 'ring-2 ring-violet-500/50' : ''
+      }`}
       style={{ borderLeftColor: meta.accent }}
     >
       {/* Glow accent */}
@@ -89,6 +98,14 @@ export function UpdateCard({
         className="pointer-events-none absolute inset-y-0 left-0 w-1"
         style={{ backgroundColor: meta.accent }}
       />
+      {update.pinned && (
+        <div className="pointer-events-none absolute right-2 top-2 z-10">
+          <span className="inline-flex items-center gap-1 rounded-full bg-violet-500/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-violet-300">
+            <Pin className="h-2.5 w-2.5" />
+            Pinned
+          </span>
+        </div>
+      )}
       <div className="p-4 pl-5">
         <div className="mb-2 flex flex-wrap items-center gap-2">
           <span
@@ -155,7 +172,7 @@ export function UpdateCard({
         </div>
 
         {showActions && (
-          <div className="mt-3 flex items-center gap-2 border-t border-slate-700/60 pt-3">
+          <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-slate-700/60 pt-3">
             {update.status === 'active' && onResolve && (
               <Button
                 size="sm"
@@ -178,6 +195,31 @@ export function UpdateCard({
               >
                 {busy ? <Loader2 className="h-3 w-3 animate-spin" /> : <RotateCcw className="h-3 w-3" />}
                 Reactivate
+              </Button>
+            )}
+            {canPin && !update.pinned && onPin && (
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={busy}
+                onClick={() => handleAction(onPin)}
+                title="Pin to top of wall"
+                className="border-violet-600 bg-violet-950/30 text-violet-300 hover:bg-violet-900/40 hover:text-violet-200"
+              >
+                {busy ? <Loader2 className="h-3 w-3 animate-spin" /> : <Pin className="h-3 w-3" />}
+                Pin
+              </Button>
+            )}
+            {update.pinned && onUnpin && (
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={busy}
+                onClick={() => handleAction(onUnpin)}
+                className="border-violet-600 bg-violet-950/30 text-violet-300 hover:bg-violet-900/40 hover:text-violet-200"
+              >
+                {busy ? <Loader2 className="h-3 w-3 animate-spin" /> : <PinOff className="h-3 w-3" />}
+                Unpin
               </Button>
             )}
             {onDelete && (

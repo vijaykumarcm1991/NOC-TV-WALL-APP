@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   Select,
   SelectContent,
@@ -14,7 +15,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
-import { Plus, Send, Loader2 } from 'lucide-react'
+import { Plus, Send, Loader2, Pin } from 'lucide-react'
 import { PRIORITY_META, CATEGORY_META } from '@/lib/noc-types'
 import type { Priority, Category, NocUpdate } from '@/lib/noc-types'
 
@@ -40,8 +41,19 @@ export function NewUpdateForm({ onCreated }: NewUpdateFormProps) {
   const [authorName, setAuthorName] = useState('NOC Operator')
   const [source, setSource] = useState('NOC')
   const [expiryMinutes, setExpiryMinutes] = useState<number | null>(null)
+  const [pinned, setPinned] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  // Sync authorName with logged-in user (best-effort, once on mount)
+  useEffect(() => {
+    fetch('/api/auth/me')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.user?.name) setAuthorName(data.user.name)
+      })
+      .catch(() => {})
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -63,6 +75,7 @@ export function NewUpdateForm({ onCreated }: NewUpdateFormProps) {
           authorName: authorName.trim() || 'NOC Operator',
           source: source.trim() || null,
           expiresInMinutes: expiryMinutes,
+          pinned: priority === 'critical' && pinned,
         }),
       })
       if (!res.ok) {
@@ -75,6 +88,7 @@ export function NewUpdateForm({ onCreated }: NewUpdateFormProps) {
       setPriority('info')
       setCategory('general')
       setExpiryMinutes(null)
+      setPinned(false)
       onCreated(data.update as NocUpdate)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to post update')
@@ -209,6 +223,26 @@ export function NewUpdateForm({ onCreated }: NewUpdateFormProps) {
               </Select>
             </div>
           </div>
+
+          {priority === 'critical' && (
+            <div className="flex items-center gap-3 rounded-md border border-violet-200 bg-violet-50 px-3 py-2.5">
+              <Checkbox
+                id="pinned"
+                checked={pinned}
+                onCheckedChange={(v) => setPinned(v === true)}
+                className="border-violet-400 data-[state=checked]:bg-violet-600 data-[state=checked]:border-violet-600"
+              />
+              <Label htmlFor="pinned" className="flex-1 cursor-pointer text-sm text-violet-800">
+                <span className="flex items-center gap-1.5 font-medium">
+                  <Pin className="h-3.5 w-3.5" />
+                  Pin to top of wall
+                </span>
+                <span className="text-xs text-violet-600">
+                  Critical updates only. Pinned updates stay at the top of the wall.
+                </span>
+              </Label>
+            </div>
+          )}
 
           {error && (
             <div className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>

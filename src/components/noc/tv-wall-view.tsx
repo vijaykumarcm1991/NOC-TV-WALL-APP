@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Activity, AlertTriangle, Clock, Megaphone, Wrench, CircleDot, WifiOff, Radio } from 'lucide-react'
+import { Activity, AlertTriangle, Clock, Megaphone, Wrench, CircleDot, WifiOff, Radio, Pin } from 'lucide-react'
 import { PRIORITY_META, CATEGORY_META } from '@/lib/noc-types'
 import type { NocUpdate, Category, Priority, WallEvent } from '@/lib/noc-types'
 import { useNocSocket } from '@/hooks/use-noc-socket'
@@ -71,6 +71,9 @@ export function TvWallView({ onExit }: TvWallViewProps) {
           return prev
             .filter((u) => (event.type === 'update:resolved' ? u.id !== event.update.id : true))
             .concat(event.type === 'update:reactivated' ? [event.update] : [])
+        case 'update:pinned':
+        case 'update:unpinned':
+          return prev.map((u) => (u.id === event.update.id ? event.update : u))
         case 'update:deleted':
           return prev.filter((u) => u.id !== event.id)
         case 'wall:cleared':
@@ -85,10 +88,11 @@ export function TvWallView({ onExit }: TvWallViewProps) {
     setConnected(socket.connected)
   }, [socket.connected])
 
-  // Sort active updates by priority then recency
+  // Sort: pinned first, then by priority, then by recency
   const sorted = useMemo(() => {
     const priorityOrder: Record<Priority, number> = { critical: 0, warning: 1, info: 2, success: 3 }
     return [...updates].sort((a, b) => {
+      if (a.pinned !== b.pinned) return a.pinned ? -1 : 1
       const p = priorityOrder[a.priority] - priorityOrder[b.priority]
       if (p !== 0) return p
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -370,6 +374,12 @@ function WallCard({ update, now }: { update: NocUpdate; now: Date }) {
             <CatIcon className="h-3 w-3" />
             {CATEGORY_META[update.category].label}
           </span>
+          {update.pinned && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-violet-500/20 px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-violet-300 ring-1 ring-violet-500/40">
+              <Pin className="h-3 w-3" />
+              Pinned
+            </span>
+          )}
           <span className="ml-auto text-xs text-slate-400">
             {formatAgo(update.createdAt, now)}
           </span>

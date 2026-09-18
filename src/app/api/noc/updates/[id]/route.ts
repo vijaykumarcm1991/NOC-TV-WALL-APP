@@ -1,14 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
+import { logAudit, getRequestIp } from '@/lib/audit'
+import { sendUpdateWebhook } from '@/lib/webhook'
 
-// PATCH /api/noc/updates/[id]  — update status (resolve/reactivate) or edit fields
+// PATCH /api/noc/updates/[id] — update status (resolve/reactivate) or edit fields
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params
-  const body = await req.json()
+  const session = await getServerSession(authOptions)
+  if (!session?.user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+  const actorName = session.user.name ?? 'NOC Operator'
 
+  const body = await req.json()
   const existing = await db.nocUpdate.findUnique({ where: { id } })
   if (!existing) {
     return NextResponse.json({ error: 'Update not found' }, { status: 404 })
@@ -21,6 +30,14 @@ export async function PATCH(
       where: { id },
       data: { status: 'resolved', resolvedAt: new Date(), updatedAt: new Date() },
     })
+    await logAudit({
+      action: 'resolve',
+      actorName,
+      updateId: id,
+      updateTitle: updated.title,
+      ip: getRequestIp(req),
+    })
+    sendUpdateWebhook(updated as never, process.env.SLACK_WEBHOOK_URL || process.env.WEBHOOK_URL, 'resolved')
     return NextResponse.json({ update: updated })
   }
 
@@ -28,6 +45,44 @@ export async function PATCH(
     const updated = await db.nocUpdate.update({
       where: { id },
       data: { status: 'active', resolvedAt: null, updatedAt: new Date() },
+    })
+    await logAudit({
+      action: 'reactivate',
+      actorName,
+      updateId: id,
+      updateTitle: updated.title,
+      ip: getRequestIp(req),
+    })
+    sendUpdateWebhook(updated as never, process.env.SLACK_WEBHOOK_URL || process.env.WEBHOOK_URL, 'reactivated')
+    return NextResponse.json({ update: updated })
+  }
+
+  if (action === 'pin') {
+    const updated = await db.nocUpdate.update({
+      where: { id },
+      data: { pinned: true, pinnedAt: new Date(), updatedAt: new Date() },
+    })
+    await logAudit({
+      action: 'pin',
+      actorName,
+      updateId: id,
+      updateTitle: updated.title,
+      ip: getRequestIp(req),
+    })
+    return NextResponse.json({ update: updated })
+  }
+
+  if (action === 'unpin') {
+    const updated = await db.nocUpdate.update({
+      where: { id },
+      data: { pinned: false, pinnedAt: null, updatedAt: new Date() },
+    })
+    await logAudit({
+      action: 'unpin',
+      actorName,
+      updateId: id,
+      updateTitle: updated.title,
+      ip: getRequestIp(req),
     })
     return NextResponse.json({ update: updated })
   }
@@ -54,14 +109,28 @@ export async function PATCH(
 
 // DELETE /api/noc/updates/[id]
 export async function DELETE(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params
+  const session = await getServerSession(authOptions)
+  if (!session?.user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+  const actorName = session.user.name ?? 'NOC Operator'
+
   const existing = await db.nocUpdate.findUnique({ where: { id } })
   if (!existing) {
     return NextResponse.json({ error: 'Update not found' }, { status: 404 })
   }
   await db.nocUpdate.delete({ where: { id } })
+  await logAudit({
+    action: 'delete',
+    actorName,
+    updateId: id,
+    updateTitle: existing.title,
+    ip: getRequestIp(req),
+  })
+  sendUpdateWebhook(existing as never, process.env.SLACK_WEBHOOK_URL || process.env.WEBHOOK_URL, 'deleted')
   return NextResponse.json({ ok: true, id })
 }

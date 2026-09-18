@@ -9,11 +9,13 @@ export interface NocUpdate {
   priority: Priority
   category: Category
   status: UpdateStatus
+  pinned: boolean
   authorName: string
   source: string | null
   createdAt: string
   updatedAt: string
   expiresAt: string | null
+  pinnedAt: string | null
   resolvedAt: string | null
 }
 
@@ -22,8 +24,31 @@ export type WallEvent =
   | { type: 'update:resolved'; update: NocUpdate }
   | { type: 'update:deleted'; id: string }
   | { type: 'update:reactivated'; update: NocUpdate }
+  | { type: 'update:pinned'; update: NocUpdate }
+  | { type: 'update:unpinned'; update: NocUpdate }
   | { type: 'wall:cleared' }
   | { type: 'wall:refresh' }
+
+export type AuditAction =
+  | 'create'
+  | 'resolve'
+  | 'reactivate'
+  | 'delete'
+  | 'pin'
+  | 'unpin'
+  | 'login'
+  | 'login_failed'
+
+export interface NocAuditLog {
+  id: string
+  action: AuditAction
+  actorName: string
+  updateId: string | null
+  updateTitle: string | null
+  details: string | null
+  ip: string | null
+  createdAt: string
+}
 
 export const PRIORITY_META: Record<
   Priority,
@@ -72,4 +97,15 @@ export const CATEGORY_META: Record<Category, { label: string }> = {
   maintenance: { label: 'Maintenance' },
   announcement: { label: 'Announcement' },
   general: { label: 'General' },
+}
+
+export const AUDIT_ACTION_META: Record<AuditAction, { label: string; tone: string }> = {
+  create: { label: 'Created', tone: 'text-cyan-300' },
+  resolve: { label: 'Resolved', tone: 'text-emerald-300' },
+  reactivate: { label: 'Reactivated', tone: 'text-amber-300' },
+  delete: { label: 'Deleted', tone: 'text-red-300' },
+  pin: { label: 'Pinned', tone: 'text-violet-300' },
+  unpin: { label: 'Unpinned', tone: 'text-slate-300' },
+  login: { label: 'Login', tone: 'text-emerald-300' },
+  login_failed: { label: 'Login failed', tone: 'text-red-300' },
 }

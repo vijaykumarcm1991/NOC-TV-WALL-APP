@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
+import { logAudit, getRequestIp } from '@/lib/audit'
+import { sendUpdateWebhook } from '@/lib/webhook'
 
 // GET /api/noc/updates?status=active|resolved|expired|all
 export async function GET(req: NextRequest) {
@@ -10,7 +14,7 @@ export async function GET(req: NextRequest) {
 
   const updates = await db.nocUpdate.findMany({
     where,
-    orderBy: [{ status: 'asc' }, { createdAt: 'desc' }],
+    orderBy: [{ pinned: 'desc' }, { status: 'asc' }, { createdAt: 'desc' }],
   })
 
   // Auto-expire any active updates whose expiresAt has passed
@@ -31,8 +35,14 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({ updates })
 }
 
-// POST /api/noc/updates  — create a new update
+// POST /api/noc/updates — create a new update
 export async function POST(req: NextRequest) {
+  const session = await getServerSession(authOptions)
+  if (!session?.user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+  const actorName = session.user.name ?? 'NOC Operator'
+
   const body = await req.json()
 
   const title = (body.title ?? '').toString().trim()
@@ -47,7 +57,7 @@ export async function POST(req: NextRequest) {
   const category = ['incident', 'maintenance', 'announcement', 'general'].includes(body.category)
     ? body.category
     : 'general'
-  const authorName = (body.authorName ?? '').toString().trim() || 'NOC Operator'
+  const authorName = (body.authorName ?? '').toString().trim() || actorName
   const source = body.source ? body.source.toString().trim() : null
 
   let expiresAt: Date | null = null
@@ -62,6 +72,8 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  const pinned = !!body.pinned && body.priority === 'critical'
+
   const update = await db.nocUpdate.create({
     data: {
       title,
@@ -69,11 +81,29 @@ export async function POST(req: NextRequest) {
       priority,
       category,
       status: 'active',
+      pinned,
+      pinnedAt: pinned ? new Date() : null,
       authorName,
       source,
       expiresAt,
     },
   })
+
+  await logAudit({
+    action: 'create',
+    actorName,
+    updateId: update.id,
+    updateTitle: update.title,
+    details: { priority, category, source, expiresAt: update.expiresAt, pinned },
+    ip: getRequestIp(req),
+  })
+
+  // Fire-and-forget webhook delivery
+  sendUpdateWebhook(
+    update as never,
+    process.env.SLACK_WEBHOOK_URL || process.env.WEBHOOK_URL,
+    'created',
+  )
 
   return NextResponse.json({ update })
 }

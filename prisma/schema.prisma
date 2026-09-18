@@ -35,10 +35,26 @@ model NocUpdate {
   priority    String    @default("info") // critical | warning | info | success
   category    String    @default("general") // incident | maintenance | announcement | general
   status      String    @default("active") // active | resolved | expired
+  pinned      Boolean   @default(false)
   authorName  String    @default("NOC Operator")
-  source      String? // e.g. "NOC", "NOC-India", "On-call"
+  source      String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   expiresAt   DateTime?
+  pinnedAt    DateTime?
   resolvedAt  DateTime?
+}
+
+model NocAuditLog {
+  id          String   @id @default(cuid())
+  action      String // create | resolve | reactivate | delete | pin | unpin | login | login_failed
+  actorName   String
+  updateId    String?
+  updateTitle String?
+  details     String? // JSON string of additional info
+  ip          String?
+  createdAt   DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([action])
 }

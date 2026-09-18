@@ -16,18 +16,24 @@ import {
   ServerCrash,
   ShieldCheck,
   XCircle,
+  History,
+  LogOut,
+  Pin,
 } from 'lucide-react'
 import { NewUpdateForm } from './new-update-form'
 import { UpdateCard } from './update-card'
 import { PRIORITY_META } from '@/lib/noc-types'
 import type { NocUpdate, Priority, WallEvent } from '@/lib/noc-types'
 import { useNocSocket } from '@/hooks/use-noc-socket'
+import { signOut } from 'next-auth/react'
 
 interface OperatorConsoleProps {
   onOpenWall: () => void
+  onOpenAudit: () => void
+  currentUser: { name: string; username: string } | null
 }
 
-export function OperatorConsole({ onOpenWall }: OperatorConsoleProps) {
+export function OperatorConsole({ onOpenWall, onOpenAudit, currentUser }: OperatorConsoleProps) {
   const [updates, setUpdates] = useState<NocUpdate[]>([])
   const [loading, setLoading] = useState(true)
   const [query, setQuery] = useState('')
@@ -62,6 +68,8 @@ export function OperatorConsole({ onOpenWall }: OperatorConsoleProps) {
           return [event.update, ...prev]
         case 'update:resolved':
         case 'update:reactivated':
+        case 'update:pinned':
+        case 'update:unpinned':
           return prev.map((u) => (u.id === event.update.id ? event.update : u))
         case 'update:deleted':
           return prev.filter((u) => u.id !== event.id)
@@ -73,7 +81,7 @@ export function OperatorConsole({ onOpenWall }: OperatorConsoleProps) {
     })
   })
 
-  const handleCreated = async (update: NocUpdate) => {
+  const handleCreated = (update: NocUpdate) => {
     setUpdates((prev) => (prev.some((u) => u.id === update.id) ? prev : [update, ...prev]))
     emit({ type: 'update:created', update })
   }
@@ -112,6 +120,32 @@ export function OperatorConsole({ onOpenWall }: OperatorConsoleProps) {
     }
   }
 
+  const handlePin = async (id: string) => {
+    const res = await fetch(`/api/noc/updates/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'pin' }),
+    })
+    if (res.ok) {
+      const data = await res.json()
+      setUpdates((prev) => prev.map((u) => (u.id === id ? data.update : u)))
+      emit({ type: 'update:pinned', update: data.update })
+    }
+  }
+
+  const handleUnpin = async (id: string) => {
+    const res = await fetch(`/api/noc/updates/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'unpin' }),
+    })
+    if (res.ok) {
+      const data = await res.json()
+      setUpdates((prev) => prev.map((u) => (u.id === id ? data.update : u)))
+      emit({ type: 'update:unpinned', update: data.update })
+    }
+  }
+
   // Stats
   const stats = useMemo(() => {
     const active = updates.filter((u) => u.status === 'active')
@@ -126,10 +160,11 @@ export function OperatorConsole({ onOpenWall }: OperatorConsoleProps) {
       success: active.filter((u) => u.priority === 'success').length,
       resolved: resolved.length,
       expired: expired.length,
+      pinned: active.filter((u) => u.pinned).length,
     }
   }, [updates])
 
-  // Filtered lists
+  // Filtered lists (active: pinned first, then priority, then recency)
   const filteredActive = useMemo(() => {
     const q = query.trim().toLowerCase()
     return updates
@@ -142,6 +177,13 @@ export function OperatorConsole({ onOpenWall }: OperatorConsoleProps) {
           u.content.toLowerCase().includes(q) ||
           u.authorName.toLowerCase().includes(q),
       )
+      .sort((a, b) => {
+        if (a.pinned !== b.pinned) return a.pinned ? -1 : 1
+        const order: Record<Priority, number> = { critical: 0, warning: 1, info: 2, success: 3 }
+        const p = order[a.priority] - order[b.priority]
+        if (p !== 0) return p
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      })
   }, [updates, query, priorityFilter])
 
   const filteredResolved = useMemo(() => {
@@ -174,16 +216,30 @@ export function OperatorConsole({ onOpenWall }: OperatorConsoleProps) {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Badge
+            <span className="hidden text-xs text-slate-500 sm:inline">
+              Signed in as <span className="font-medium text-slate-700">{currentUser?.name ?? 'Operator'}</span>
+            </span>
+            <Button
+              onClick={onOpenAudit}
               variant="outline"
-              className="hidden items-center gap-1.5 border-emerald-200 bg-emerald-50 text-emerald-700 sm:flex"
+              className="border-slate-200 bg-white"
+              title="View audit log"
             >
-              <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />
-              Live
-            </Badge>
+              <History className="h-4 w-4" />
+              <span className="hidden sm:inline">Audit Log</span>
+            </Button>
             <Button onClick={onOpenWall} variant="default" className="bg-slate-900 hover:bg-slate-800">
               <Radio className="h-4 w-4" />
-              Open Wall View
+              <span className="hidden sm:inline">Open Wall View</span>
+              <span className="sm:hidden">Wall</span>
+            </Button>
+            <Button
+              onClick={() => signOut({ callbackUrl: '/' })}
+              variant="ghost"
+              className="text-slate-500 hover:bg-slate-100 hover:text-slate-700"
+              title="Sign out"
+            >
+              <LogOut className="h-4 w-4" />
             </Button>
           </div>
         </div>
@@ -191,11 +247,12 @@ export function OperatorConsole({ onOpenWall }: OperatorConsoleProps) {
 
       {/* Stats bar */}
       <section className="border-b border-slate-200 bg-white">
-        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-3 px-4 py-3 sm:grid-cols-3 md:grid-cols-6 sm:px-6 lg:px-8">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-3 px-4 py-3 sm:grid-cols-3 md:grid-cols-7 sm:px-6 lg:px-8">
           <StatTile label="Active" value={stats.active} icon={<Activity className="h-4 w-4" />} tone="slate" />
           <StatTile label="Critical" value={stats.critical} icon={<AlertOctagon className="h-4 w-4" />} tone="red" />
           <StatTile label="Warning" value={stats.warning} icon={<AlertOctagon className="h-4 w-4" />} tone="amber" />
           <StatTile label="Info" value={stats.info} icon={<Activity className="h-4 w-4" />} tone="cyan" />
+          <StatTile label="Pinned" value={stats.pinned} icon={<Pin className="h-4 w-4" />} tone="violet" />
           <StatTile label="Resolved" value={stats.resolved} icon={<ShieldCheck className="h-4 w-4" />} tone="emerald" />
           <StatTile label="Expired" value={stats.expired} icon={<XCircle className="h-4 w-4" />} tone="slate" />
         </div>
@@ -277,6 +334,8 @@ export function OperatorConsole({ onOpenWall }: OperatorConsoleProps) {
                       onResolve={handleResolve}
                       onReactivate={handleReactivate}
                       onDelete={handleDelete}
+                      onPin={handlePin}
+                      onUnpin={handleUnpin}
                     />
                   ))}
                 </div>
@@ -305,6 +364,7 @@ export function OperatorConsole({ onOpenWall }: OperatorConsoleProps) {
                       showActions
                       onReactivate={handleReactivate}
                       onDelete={handleDelete}
+                      onUnpin={handleUnpin}
                     />
                   ))}
                 </div>
@@ -331,13 +391,14 @@ function StatTile({
   label: string
   value: number
   icon: React.ReactNode
-  tone: 'slate' | 'red' | 'amber' | 'cyan' | 'emerald'
+  tone: 'slate' | 'red' | 'amber' | 'cyan' | 'violet' | 'emerald'
 }) {
   const toneClasses: Record<typeof tone, string> = {
     slate: 'bg-slate-50 text-slate-700 border-slate-200',
     red: 'bg-red-50 text-red-700 border-red-200',
     amber: 'bg-amber-50 text-amber-700 border-amber-200',
     cyan: 'bg-cyan-50 text-cyan-700 border-cyan-200',
+    violet: 'bg-violet-50 text-violet-700 border-violet-200',
     emerald: 'bg-emerald-50 text-emerald-700 border-emerald-200',
   }
   return (

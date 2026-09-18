@@ -1,0 +1,74 @@
+# =============================================================================
+# NOC TV Wall — full stack via Docker Compose
+# =============================================================================
+# Services:
+#   - caddy  : Public reverse proxy on :80 (host port 8080). Routes /?XTransformPort=3003
+#             to the ws service, everything else to the app service.
+#   - app    : Next.js 16 standalone server (port 3000, internal only). Hosts the
+#             operator console, the TV wall display, the auth + audit + webhook APIs,
+#             and the Next.js API routes. SQLite database is persisted via a volume.
+#   - ws     : Bun-based socket.io server (port 3003, internal only) for real-time
+#             broadcast of update events to every connected wall display and operator.
+#
+# Quick start:
+#   1. cp .env.example .env     # then edit .env (especially NEXTAUTH_SECRET + NOC_ADMIN_PASSWORD)
+#   2. docker compose up --build -d
+#   3. open http://localhost:8080
+# =============================================================================
+
+services:
+  caddy:
+    image: caddy:2-alpine
+    container_name: noc-wall-caddy
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+    depends_on:
+      app:
+        condition: service_healthy
+      ws:
+        condition: service_healthy
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: noc-wall-app
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      # Override the DATABASE_URL to point at the in-container mount path
+      DATABASE_URL: file:/app/db/custom.db
+      # Override the public URL to the Caddy gateway port
+      NEXTAUTH_URL: http://localhost:8080
+      NODE_ENV: production
+    volumes:
+      - noc-db:/app/db
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/noc/updates?status=active"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 30s
+    depends_on:
+      ws:
+        condition: service_healthy
+
+  ws:
+    build:
+      context: ./mini-services/noc-wall
+      dockerfile: Dockerfile
+    container_name: noc-wall-ws
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3003/?EIO=4&transport=polling"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 10s
+
+volumes:
+  noc-db:
+    driver: local

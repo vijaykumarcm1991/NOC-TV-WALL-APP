@@ -1,0 +1,56 @@
+# Version control
+.git
+.gitignore
+
+# Node / Bun dependencies (will be installed inside the container)
+node_modules
+**/node_modules
+
+# Next.js build output (will be built inside the container)
+.next
+**/.next
+out
+dist
+
+# Bun / build cache
+.cache
+.turbo
+
+# Logs
+*.log
+logs
+dev.log
+server.log
+
+# Docker artifacts
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Mini-services don't need to be inside the app image
+mini-services
+
+# Tests
+tests
+**/__tests__
+**/*.test.ts
+**/*.spec.ts
+
+# Download / deliverables
+download
+
+# Sandbox / dev tooling
+.zscripts
+.vscode
+.idea
+.DS_Store
+
+# Environment (passed via env_file at runtime)
+.env
+.env.local
+.env.*.local
+
+# Database file (mounted as a volume at runtime)
+db
+*.db
+*.db-journal
