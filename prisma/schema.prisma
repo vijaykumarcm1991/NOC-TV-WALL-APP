@@ -1,0 +1,44 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  title     String
+  content   String?
+  published Boolean  @default(false)
+  authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model NocUpdate {
+  id          String    @id @default(cuid())
+  title       String
+  content     String
+  priority    String    @default("info") // critical | warning | info | success
+  category    String    @default("general") // incident | maintenance | announcement | general
+  status      String    @default("active") // active | resolved | expired
+  authorName  String    @default("NOC Operator")
+  source      String? // e.g. "NOC", "NOC-India", "On-call"
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  expiresAt   DateTime?
+  resolvedAt  DateTime?
+}
